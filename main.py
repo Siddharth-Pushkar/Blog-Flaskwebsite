@@ -4,9 +4,11 @@ from flask_mail import Mail
 import json
 from datetime import datetime
 
+
+
+
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
-
 
 local_server = 'True'
 app = Flask(__name__)
@@ -19,6 +21,8 @@ app.config.update(
     MAIL_USERNAME = params['gmail-user'],
     MAIL_PASSWORD = params['gmail-password']
 )
+
+
 mail = Mail(app)
 
 if(local_server):
@@ -76,7 +80,10 @@ def contact():
         entry = Contacts(name = name, phone_num = phone, date = datetime.now(), email = email, msg = message)
         db.session.add(entry)
         db.session.commit()
-        mail.send_message("New message from user" + name , sender = email , recipients = [params ['gmail-user']]  , body = message )
+        mail.send_message("New message from user " + name ,
+                          sender = email ,
+                          recipients = [params ['gmail-user']]  ,
+                          body = message + "\n" + phone)
 
 
 
